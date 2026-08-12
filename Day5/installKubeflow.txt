@@ -1,0 +1,106 @@
+## STEP 1
+
+#
+## Install Kubeflow 1.10 manifests
+#
+
+1. git clone --branch v1.10.0 https://github.com/kubeflow/manifests.git kubeflow-manifests
+
+2. cd kubeflow-manifests
+3. git branch --show-current
+
+#
+## You should see: v1.10.0
+#
+
+--------------------------------------------------------------------------------------------------
+
+## STEP 2
+
+#
+## Install Kustomize
+#
+
+# Open PowerShell as Administrator and RUN
+
+1. choco install kustomize -y
+2. kustomize version
+
+
+--------------------------------------------------------------------------------------------------
+
+## STEP 3
+
+#
+## Install the full Kubeflow platform
+#
+
+1. Make sure you have cloned the Kubeflow 1.10 manifests i.e. STEP 1 is completed
+2. cd kubeflow-manifests
+3. RUN Command
+
+    while ! kustomize build example | kubectl apply --server-side --force-conflicts -f -; do
+        echo "Retrying to apply resources"
+        sleep 20
+    done
+
+4. Open another GitBash and watch installation
+
+    kubectl get pods -A -w
+
+## CrashLoopBackOff Image Issue faced with KServer and MiniIO
+
+5. Pull KServe docker image
+    docker pull quay.io/brancz/kube-rbac-proxy:v0.18.0
+
+6. Pull MinIO docker image
+    docker pull kubef/minio:RELEASE.2019-08-14T20-37-41Z-license-compliance
+
+7. Update Kubernetes Deployment for MiniIO
+    kubectl set image deployment/minio \
+      minio=kubef/minio:RELEASE.2019-08-14T20-37-41Z-license-compliance \
+      -n kubeflow
+
+--------------------------------------------------------------------------------------------------
+
+## STEP 4
+
+#
+## Check the important namespaces
+#
+
+1. RUN
+    kubectl get namespaces
+
+2. You should see namespaces associated with the Kubeflow installation, such as:
+
+    cert-manager
+    istio-system
+    kubeflow
+
+--------------------------------------------------------------------------------------------------
+
+## STEP 5
+
+#
+## Check Kubeflow Pods
+#
+
+RUN
+1. kubectl get pods -n kubeflow
+2. kubectl get pods -n istio-system
+3. kubectl get pods -n cert-manager
+
+--------------------------------------------------------------------------------------------------
+
+## STEP 5
+
+#
+## Open the Full Kubeflow UI
+#
+
+1. For the full Kubeflow platform, use:
+    kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80
+
+2. Goto Browser and RUN
+    http://localhost:8080
