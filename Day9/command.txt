@@ -1,0 +1,1 @@
+python train.py --test-size 0.20 --random-state 100
