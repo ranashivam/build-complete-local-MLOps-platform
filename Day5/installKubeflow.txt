@@ -115,4 +115,4 @@ RUN
 
 1. kubectl get pods -A
 2. kubectl describe pod <pod-name> -n <namespace>
-3. kubectl logs <pod-name> -n <namespace>
+3. kubectl logs <pod-name> -n <namespace>0

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow
+  namespace: kubeflow
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: mlflow
+
+  template:
+    metadata:
+      labels:
+        app: mlflow
+
+    spec:
+      containers:
+      - name: mlflow
+        image: ghcr.io/mlflow/mlflow:v2.9.2
+
+        command:
+        - mlflow
+
+        args:
+        - server
+        - --host=0.0.0.0
+        - --port=5000
+
+        ports:
+        - containerPort: 5000
+---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow-service
+  namespace: kubeflow
+
+spec:
+  selector:
+    app: mlflow
+
+  ports:
+  - port: 5000
+    targetPort: 5000
