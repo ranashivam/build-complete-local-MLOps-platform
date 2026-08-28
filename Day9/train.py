@@ -97,6 +97,39 @@ def main():
         # Log the model performance to MLflow
         mlflow.log_metric("accuracy", accuracy)
 
+        # --------------------------------------------------
+        # Create and log artifacts
+        # --------------------------------------------------
+
+        # Create local artifacts directory
+        os.makedirs("artifacts", exist_ok=True)
+
+        # Save the trained model
+        model_path = "artifacts/iris_model.pkl"
+
+        joblib.dump(model, model_path)
+
+        # Upload the model file to the MLflow run
+        mlflow.log_artifact(model_path)
+
+        # Create a simple experiment report
+        report_path = "artifacts/experiment_report.txt"
+
+        with open(report_path, "w") as file:
+            file.write("Iris Classification Experiment\n")
+            file.write("==============================\n\n")
+            file.write(f"Test Size: {args.test_size}\n")
+            file.write(f"Random State: {args.random_state}\n")
+            file.write("Model: LogisticRegression\n")
+            file.write("Max Iterations: 200\n")
+            file.write(f"Accuracy: {accuracy:.4f}\n")
+
+        # Upload the report to MLflow
+        mlflow.log_artifact(report_path)
+
+        print("\nArtifacts logged to MLflow:")
+        print(f"- {model_path}")
+        print(f"- {report_path}")
 
         print("\nModel evaluation:")
         print(f"Test samples: {len(X_test)}")
