@@ -1,25 +1,21 @@
-# ============================================================
-# STEP 1 — IMPORTS
-# ============================================================
 
 import argparse
-
+import mlflow
+import mlflow.sklearn
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
-
-# STEP 1 PLACEHOLDER:
-# Add MLflow import here
-# Example:
-# import mlflow
-
+import argparse
+import os
+import joblib
+import mlflow
+import mlflow.sklearn
 
 def main():
 
-    # ========================================================
-    # STEP 2 — ARGUMENT PARSER
-    # ========================================================
+    # Connect this Python application to our MLflow server
+    mlflow.set_tracking_uri("http://localhost:5000")
 
     parser = argparse.ArgumentParser(
         description="Train a simple Iris classification model."
@@ -41,111 +37,70 @@ def main():
 
     args = parser.parse_args()
 
-    # ========================================================
-    # STEP 2 PLACEHOLDER:
-    # MLflow connection goes here
-    # ========================================================
+    # Create the experiment if it doesn't exist,
+    # or use it if it already exists.
+    mlflow.set_experiment("Iris Classification-1")
 
 
-    # ========================================================
-    # STEP 3 — CREATE / SELECT MLflow EXPERIMENT
-    # ========================================================
+    # Start an MLflow run.
+    # Everything inside this block will belong to this run.
+    with mlflow.start_run():
+        print("Loading Iris dataset...")
 
-    # STEP 3 PLACEHOLDER:
-    # Add the MLflow experiment code here
-    #
-    # Example:
-    # mlflow.set_experiment("Iris Classification")
+        iris = load_iris()
 
+        X = iris.data
+        y = iris.target
 
-    # ========================================================
-    # STEP 4 — START MLflow RUN
-    # ========================================================
-
-    # STEP 4 PLACEHOLDER:
-    # The training code below will eventually go inside:
-    #
-    # with mlflow.start_run():
-    #
-    # Do NOT add log_param(), log_metric(), etc. here yet.
+        print(f"Total samples: {len(X)}")
 
 
-    print("Loading Iris dataset...")
+        print("\nSplitting data...")
 
-    iris = load_iris()
+        X_train, X_test, y_train, y_test = train_test_split(
+            X,
+            y,
+            test_size=args.test_size,
+            random_state=args.random_state,
+        )
 
-    X = iris.data
-    y = iris.target
+        print(f"Training samples: {len(X_train)}")
+        print(f"Testing samples: {len(X_test)}")
 
-    print(f"Total samples: {len(X)}")
-
-    print("\nSplitting data...")
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
-        test_size=args.test_size,
-        random_state=args.random_state,
-    )
-
-    print(f"Training samples: {len(X_train)}")
-    print(f"Testing samples: {len(X_test)}")
-
-    # ========================================================
-    # STEP 5 — LOG TRAINING PARAMETERS
-    # ========================================================
-
-    # STEP 5 PLACEHOLDER:
-    # Add mlflow.log_param() calls here.
-    #
-    # Example:
-    # mlflow.log_param("test_size", args.test_size)
-    # mlflow.log_param("random_state", args.random_state)
+        # Log the parameters used for this training run
+        mlflow.log_param("test_size", args.test_size)
+        mlflow.log_param("random_state", args.random_state)
 
 
-    print("\nTraining model...")
+        print("\nTraining model...")
 
-    model = LogisticRegression(
-        max_iter=200,
-        random_state=args.random_state,
-    )
+        model = LogisticRegression(
+            max_iter=200,
+            random_state=args.random_state,
+        )
 
-    # ========================================================
-    # STEP 6 — LOG MODEL PARAMETERS
-    # ========================================================
-
-    # STEP 6 PLACEHOLDER:
-    # Add model configuration tracking here.
-    #
-    # Example:
-    # mlflow.log_param("model", "LogisticRegression")
-    # mlflow.log_param("max_iter", 200)
+        # Log the model configuration
+        mlflow.log_param("model", "LogisticRegression")
+        mlflow.log_param("max_iter", 200)
 
 
-    model.fit(X_train, y_train)
+        model.fit(X_train, y_train)
 
-    print("Model training completed.")
+        print("Model training completed.")
 
-    print("\nMaking predictions...")
+        print("\nMaking predictions...")
 
-    predictions = model.predict(X_test)
+        predictions = model.predict(X_test)
 
-    accuracy = accuracy_score(y_test, predictions)
+        accuracy = accuracy_score(y_test, predictions)
 
-    # ========================================================
-    # STEP 7 — LOG METRIC
-    # ========================================================
-
-    # STEP 7 PLACEHOLDER:
-    # Add the accuracy metric here.
-    #
-    # Example:
-    # mlflow.log_metric("accuracy", accuracy)
+        # Log the model performance to MLflow
+        mlflow.log_metric("accuracy", accuracy)
 
 
-    print("\nModel evaluation:")
-    print(f"Test samples: {len(X_test)}")
-    print(f"Accuracy: {accuracy:.4f}")
+        print("\nModel evaluation:")
+        print(f"Test samples: {len(X_test)}")
+        print(f"Accuracy: {accuracy:.4f}")
 
 
 if __name__ == "__main__":
