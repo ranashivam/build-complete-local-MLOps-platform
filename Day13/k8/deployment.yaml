@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-ml-app
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: iris-ml-app
+
+  template:
+    metadata:
+      labels:
+        app: iris-ml-app
+
+    spec:
+      containers:
+        - name: iris-ml-container
+
+          # CHANGE THIS to your Docker Hub image
+          image: shivamrana28/iris-m1-app:v1
+
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8000
+
+          # Configuration from ConfigMap
+          env:
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: iris-ml-config
+                  key: APP_ENV
+
+            # Sensitive value from Secret
+            - name: ML_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: iris-ml-secret
+                  key: ML_API_KEY
