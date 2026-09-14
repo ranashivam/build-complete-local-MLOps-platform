@@ -503,7 +503,7 @@ def prepare_data(
 
     return dsl.ContainerSpec(
 
-        image="shivamrana28/iris-m1-app:v17",
+        image="shivamrana28/iris-m1-app:v16",
 
         command=[
             "python",
@@ -530,7 +530,7 @@ def train_model(
 
     return dsl.ContainerSpec(
 
-        image="shivamrana28/iris-m1-app:v17",
+        image="shivamrana28/iris-m1-app:v16",
 
         command=[
             "python",
@@ -559,7 +559,7 @@ def evaluate_model(
 
     return dsl.ContainerSpec(
 
-        image="shivamrana28/iris-m1-app:v17",
+        image="shivamrana28/iris-m1-app:v16",
 
         command=[
             "python",
@@ -592,7 +592,7 @@ def log_mlflow(
 
     return dsl.ContainerSpec(
 
-        image="shivamrana28/iris-m1-app:v17",
+        image="shivamrana28/iris-m1-app:v16",
 
         command=[
             "python",
