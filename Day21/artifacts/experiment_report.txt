@@ -1,0 +1,8 @@
+Iris Classification Experiment
+==============================
+
+Test Size: 0.3
+Random State: 100
+Model: LogisticRegression
+Max Iterations: 200
+Accuracy: 0.9778
