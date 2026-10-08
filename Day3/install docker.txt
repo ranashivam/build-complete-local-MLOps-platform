@@ -1,0 +1,115 @@
+Step 1: Install Chocolatey (If Not Already Installed)
+
+Open Windows PowerShell as Administrator and run:
+
+Set-ExecutionPolicy Bypass -Scope Process -Force; `
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+Verify the installation:
+
+choco --version
+Step 2: Install Docker Desktop
+
+Run:
+
+choco install docker-desktop -y
+Step 3: Restart Windowskind delete cluster --name kind-cluster-1
+
+Docker Desktop requires a reboot.
+
+You can restart from PowerShell:
+
+Restart-Computer
+
+Or simply restart from the Windows Start menu.
+
+Step 4: Launch Docker Desktop
+
+Open Docker Desktop from the Start Menu.
+
+On the first launch:
+
+Accept the license agreement.
+If prompted, enable WSL 2.
+Wait until Docker finishes starting.
+
+You should eventually see:
+
+Engine running
+
+or a green status indicator in Docker Desktop.
+
+Step 5: Verify Docker
+
+Open a new PowerShell or Command Prompt and run:
+
+docker version
+
+Expected output:
+
+Client:
+ Version: xx.xx.xx
+
+Server:
+ Engine:
+  Version: xx.xx.xx
+
+Verify Docker is running:
+
+docker ps
+
+Expected output:
+
+CONTAINER ID   IMAGE   COMMAND   CREATED   STATUS   PORTS   NAMES
+
+An empty list is perfectly fine—it just means no containers are running yet.
+
+Step 6: Test Docker
+
+Run the classic test container:
+
+docker run hello-world
+
+Expected output (truncated):
+
+Hello from Docker!
+
+This message shows that your installation appears to be working correctly.
+Step 7: Verify WSL (Optional)
+
+Docker Desktop on Windows uses WSL 2.
+
+Check that it's installed:
+
+wsl --status
+
+You should see something like:
+
+Default Distribution: Ubuntu
+Default Version: 2
+Commands Summary
+# Install Chocolatey
+Set-ExecutionPolicy Bypass -Scope Process -Force; `
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Verify Chocolatey
+choco --version
+
+# Install Docker Desktop
+choco install docker-desktop -y
+
+# Restart Windows
+Restart-Computer
+
+# Verify Docker
+docker version
+
+docker ps
+
+# Test Docker
+docker run hello-world
+
+# Verify WSL
+wsl --status
